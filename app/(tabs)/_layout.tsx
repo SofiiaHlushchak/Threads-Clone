@@ -1,35 +1,60 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
 
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { Heart, Home, Plus, Search, User } from "lucide-react-native";
 
 export default function TabLayout() {
+    const router = useRouter();
     return (
         <Tabs
             screenOptions={{
                 tabBarActiveTintColor: "#0a7ea4",
                 headerShown: false,
-
-                tabBarStyle: Platform.select({
-                    ios: {
-                        position: "absolute",
-                    },
-                    default: {},
-                }),
             }}
         >
             <Tabs.Screen
                 name="index"
                 options={{
-                    title: "Home",
-                    tabBarIcon: ({ color, focused }) => (
-                        <Ionicons
-                            name={focused ? "home" : "home-outline"}
-                            color={color}
-                            size={24}
-                        />
+                    title: "",
+                    tabBarIcon: ({ color }) => <Home color={color} size={24} />,
+                }}
+            />
+            <Tabs.Screen
+                name="search"
+                options={{
+                    title: "",
+                    tabBarIcon: ({ color }) => (
+                        <Search color={color} size={24} />
                     ),
+                }}
+            />
+            <Tabs.Screen
+                name="empty"
+                options={{
+                    title: "",
+                    tabBarIcon: ({ color }) => <Plus color={color} size={24} />,
+                }}
+                listeners={{
+                    tabPress: (e) => {
+                        console.log(e);
+                        router.push("/post");
+                    },
+                }}
+            />
+            <Tabs.Screen
+                name="activity"
+                options={{
+                    title: "",
+                    tabBarIcon: ({ color }) => (
+                        <Heart color={color} size={24} />
+                    ),
+                }}
+            />
+            <Tabs.Screen
+                name="profile"
+                options={{
+                    title: "",
+                    tabBarIcon: ({ color }) => <User color={color} size={24} />,
                 }}
             />
         </Tabs>
