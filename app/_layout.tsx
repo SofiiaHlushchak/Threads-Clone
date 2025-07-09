@@ -1,8 +1,11 @@
 import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
+import { AuthProvider } from "@/providers/AuthProvider";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import "react-native-reanimated";
+
+// SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
     const [loaded] = useFonts({
@@ -15,15 +18,23 @@ export default function RootLayout() {
 
     return (
         <GluestackUIProvider mode="light">
-            <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-                <Stack.Screen
-                    name="post"
-                    options={{ headerShown: false, presentation: "modal" }}
-                />
-                <Stack.Screen name="+not-found" />
-            </Stack>
+            <AuthProvider>
+                <Stack>
+                    <Stack.Screen
+                        name="(tabs)"
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="(auth)"
+                        options={{ headerShown: false }}
+                    />
+                    <Stack.Screen
+                        name="post"
+                        options={{ headerShown: false, presentation: "modal" }}
+                    />
+                    <Stack.Screen name="+not-found" />
+                </Stack>
+            </AuthProvider>
         </GluestackUIProvider>
     );
 }
