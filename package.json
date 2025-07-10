@@ -43,6 +43,7 @@
     "@gluestack-ui/toast": "^1.0.9",
     "@gluestack-ui/tooltip": "^0.1.44",
     "@legendapp/motion": "^2.4.0",
+    "@prisma/client": "^6.11.1",
     "@react-native-async-storage/async-storage": "2.1.2",
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
@@ -86,6 +87,7 @@
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "jscodeshift": "^0.15.2",
+    "prisma": "^6.11.1",
     "typescript": "~5.8.3"
   },
   "private": true

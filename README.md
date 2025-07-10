@@ -43,3 +43,38 @@ GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "public" TO authent
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "public" TO anon;
 
 ```
+
+## Prisma & DB Structure
+
+Add Prisma locally to manage schema
+
+```bash
+npm install prisma --save-dev
+npx prisma init --datasource-provider postgresql
+npx prisma db pull
+npx prisma generate
+npx prisma migrate dev --name dev OR npx prisma db push
+npx prisma format
+```
+
+### Add Prisma schema to prisma/shema.prisma
+
+```prisma
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+    provider   = "postgresql"
+    url        = env("DATABASE_URL")
+    extensions = [uuidOssp(map: "uuid-ossp")]
+}
+
+model User {
+    id String  @id      @default(dbgenerated("uuid_generate_v4()"))
+    username   String?  @unique
+    avatar     String?
+    created_at Datetime @default(now())
+}
+```
