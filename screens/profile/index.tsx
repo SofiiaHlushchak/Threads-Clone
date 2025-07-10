@@ -1,19 +1,16 @@
 import { SafeAreaView, Text } from "react-native";
 
-import { Box } from "@/components/ui/box";
-import { HStack } from "@/components/ui/hstack";
+import { Button, ButtonText } from "@/components/ui/button";
+import { useAuth } from "@/providers/AuthProvider";
 
 const Profile = () => {
+    const { logOut } = useAuth();
     return (
         <SafeAreaView>
-            <HStack className="justify-between">
-                <Box className="bg-primary-500 p-5">
-                    <Text className="text-typography-0">Hello</Text>
-                </Box>
-                <Box className="bg-primary-500 p-5">
-                    <Text className="text-typography-0">Profile</Text>
-                </Box>
-            </HStack>
+            <Text>Profile</Text>
+            <Button onPress={logOut}>
+                <ButtonText>Log Out</ButtonText>
+            </Button>
         </SafeAreaView>
     );
 };
