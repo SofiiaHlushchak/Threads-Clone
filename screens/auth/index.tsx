@@ -1,10 +1,10 @@
-import { Button, ButtonText } from "@/components/ui/button";
 import { Input, InputField } from "@/components/ui/input";
+import { Text } from "@/components/ui/text";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native";
+import Layout from "./_layout";
 
 const Auth = () => {
     const { user, setUser } = useAuth();
@@ -34,7 +34,10 @@ const Auth = () => {
     };
 
     return (
-        <SafeAreaView>
+        <Layout onPress={handleSignIn} buttonText="Sign up">
+            <Text className="text-lg font-bold text-black">
+                Enter your phone number
+            </Text>
             <Input variant="outline" size="md">
                 <InputField
                     placeholder="Phone number"
@@ -43,10 +46,7 @@ const Auth = () => {
                     keyboardType="phone-pad"
                 />
             </Input>
-            <Button onPress={handleSignIn}>
-                <ButtonText>Sing in</ButtonText>
-            </Button>
-        </SafeAreaView>
+        </Layout>
     );
 };
 
