@@ -7,6 +7,7 @@ export const AuthContext = createContext({
     user: {},
     setUser: ({}) => {},
     logOut: () => {},
+    createUser: (username: string) => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -15,14 +16,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState({});
     const [session, setSession] = useState<Session | null>(null);
 
-    const getUser = async (session: Session | null) => {
-        console.log("session", session);
+    const createUser = async (username: string) => {
+        const { data, error } = await supabase
+            .from("User")
+            .insert({
+                id: session?.user.id,
+                username,
+            })
+            .select();
 
+        if (error) console.error(error);
+        if (!data) return;
+
+        const user = data[0];
+        setUser(user);
+    };
+
+    const getUser = async (session: Session | null) => {
         if (session) {
-            // get the user from the db
-            // setUser
-            console.log("gettingUser");
-            router.push("/(tabs)");
+            const { data, error } = await supabase
+                .from("User")
+                .select()
+                .eq("id", session.user.id);
+
+            if (!error) {
+                setUser(data[0]);
+                router.push("/(tabs)");
+            }
         }
     };
 
@@ -33,24 +53,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data: { session } }) => {
-            console.log("getSession");
-            console.log(session);
-
             setSession(session);
             getUser(session);
         });
 
         supabase.auth.onAuthStateChange((_event, session) => {
-            console.log("onAuthStateChange");
-            console.log(session);
-
             setSession(session);
             getUser(session);
         });
     }, []);
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logOut }}>
+        <AuthContext.Provider value={{ user, setUser, logOut, createUser }}>
             {children}
         </AuthContext.Provider>
     );
