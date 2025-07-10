@@ -2,7 +2,7 @@ import { GluestackUIProvider } from "@/components/ui/gluestack-ui-provider";
 import "@/global.css";
 import { AuthProvider } from "@/providers/AuthProvider";
 import { useFonts } from "expo-font";
-import { SplashScreen, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import "react-native-reanimated";
 
 // SplashScreen.preventAutoHideAsync();
