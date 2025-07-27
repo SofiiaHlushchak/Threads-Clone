@@ -10,10 +10,11 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
-import { supabase } from "@/lib/supabase";
 import { PostInterface } from "@/lib/types";
 import { useAuth } from "@/providers/AuthProvider";
+import { usePost } from "@/providers/PostProvider";
 import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
 import {
     Camera,
     Hash,
@@ -22,35 +23,14 @@ import {
     MapPin,
     Mic,
 } from "lucide-react-native";
-import { useState } from "react";
 import { Image, Pressable } from "react-native";
 
 interface PostCardProps {
     post: PostInterface;
-    updatePost: (id: string, key: string, value: string) => void;
 }
-const PostCard = ({ post, updatePost }: PostCardProps) => {
+const PostCard = ({ post }: PostCardProps) => {
     const { user } = useAuth();
-
-    const [photo, setPhoto] = useState<string | undefined>("");
-
-    const uploadFile = async (uri: string, type: string, name: string) => {
-        if (!uri) return;
-
-        let newFormData = new FormData();
-
-        newFormData.append("file", {
-            uri,
-            name,
-            type,
-        });
-
-        const { data, error } = await supabase.storage
-            .from(`files/${user?.id}`)
-            .upload(name, newFormData);
-
-        if (data) updatePost(post.id, "file", data?.path);
-    };
+    const { uploadFile, updatePost, photo, setPhoto } = usePost();
 
     const addPhoto = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -65,7 +45,7 @@ const PostCard = ({ post, updatePost }: PostCardProps) => {
         let name = uri?.split("/").pop();
 
         setPhoto(uri);
-        uploadFile(uri, type, name);
+        uploadFile(post.id, uri, type, name);
     };
     return (
         <HStack className="items-center px-3" space="md">
@@ -110,7 +90,18 @@ const PostCard = ({ post, updatePost }: PostCardProps) => {
                             <Images size={24} color="gray" strokeWidth={1.5} />
                         </Pressable>
 
-                        <Camera size={24} color="gray" strokeWidth={1.5} />
+                        <Pressable
+                            onPress={() => {
+                                setPhoto("");
+                                router.push({
+                                    pathname: "/camera",
+                                    params: { threadId: post.id },
+                                });
+                            }}
+                        >
+                            <Camera size={24} color="gray" strokeWidth={1.5} />
+                        </Pressable>
+
                         <ImagePlay size={24} color="gray" strokeWidth={1.5} />
                         <Mic size={24} color="gray" strokeWidth={1.5} />
                         <Hash size={24} color="gray" strokeWidth={1.5} />

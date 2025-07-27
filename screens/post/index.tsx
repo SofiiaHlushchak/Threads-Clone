@@ -18,42 +18,16 @@ import { Divider } from "@/components/ui/divider";
 import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
-import { supabase } from "@/lib/supabase";
-import { PostInterface } from "@/lib/types";
 import { useAuth } from "@/providers/AuthProvider";
-import * as Crypto from "expo-crypto";
+import { usePost } from "@/providers/PostProvider";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
 import PostCard from "./card";
 
 const Post = () => {
     const { user } = useAuth();
-    const [posts, setPosts] = useState<PostInterface[]>([]);
 
-    const DefaultPost: PostInterface = {
-        id: Crypto.randomUUID(),
-        user_id: user.id,
-        parent_id: null,
-        text: "",
-    };
+    const { posts, addThreads, uploadPosts, clearPosts } = usePost();
 
-    useEffect(() => {
-        setPosts([DefaultPost]);
-    }, []);
-
-    const onPress = async () => {
-        const { data, error } = await supabase.from("Post").insert(posts);
-
-        if (!error) router.back();
-    };
-
-    const updatePost = (id: string, key: string, value: string) => {
-        setPosts(
-            posts.map((p: PostInterface) =>
-                p.id === id ? { ...p, [key]: value } : p
-            )
-        );
-    };
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -65,6 +39,7 @@ const Post = () => {
                         <Button
                             onPress={() => {
                                 router.back();
+                                clearPosts();
                             }}
                             size="lg"
                             variant="link"
@@ -84,10 +59,7 @@ const Post = () => {
                             <FlatList
                                 data={posts}
                                 renderItem={({ item }) => (
-                                    <PostCard
-                                        post={item}
-                                        updatePost={updatePost}
-                                    />
+                                    <PostCard post={item} />
                                 )}
                             />
 
@@ -103,15 +75,7 @@ const Post = () => {
                                 <Button
                                     className="rounded-full"
                                     variant="link"
-                                    onPress={() =>
-                                        setPosts([
-                                            ...posts,
-                                            {
-                                                ...DefaultPost,
-                                                parent_id: posts[0].id,
-                                            },
-                                        ])
-                                    }
+                                    onPress={addThreads}
                                 >
                                     <ButtonText>Add to Thread</ButtonText>
                                 </Button>
@@ -119,7 +83,12 @@ const Post = () => {
                         </VStack>
                         <HStack className="items-center justify-between p-3 mb-18">
                             <Text size="sm">Anyone can reply & quote</Text>
-                            <Button className="rounded-full" onPress={onPress}>
+                            <Button
+                                className="rounded-full"
+                                onPress={() => {
+                                    uploadPosts();
+                                }}
+                            >
                                 <ButtonText>Post</ButtonText>
                             </Button>
                         </HStack>
