@@ -10,6 +10,8 @@ import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
 import { Input, InputField } from "@/components/ui/input";
 import { VStack } from "@/components/ui/vstack";
+import { PostInterface } from "@/lib/types";
+import { useAuth } from "@/providers/AuthProvider";
 import {
     Camera,
     Hash,
@@ -19,7 +21,14 @@ import {
     Mic,
 } from "lucide-react-native";
 
-const PostCard = ({ user, post, updatePost }) => {
+const PostCard = ({
+    post,
+    updatePost,
+}: {
+    post: PostInterface;
+    updatePost: (id: string, text: string) => void;
+}) => {
+    const { user } = useAuth();
     return (
         <HStack className="items-center px-3" space="md">
             <VStack className="items-center" space="md">
