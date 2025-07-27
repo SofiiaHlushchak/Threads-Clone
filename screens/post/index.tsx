@@ -19,19 +19,12 @@ import { HStack } from "@/components/ui/hstack";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { supabase } from "@/lib/supabase";
+import { PostInterface } from "@/lib/types";
 import { useAuth } from "@/providers/AuthProvider";
 import * as Crypto from "expo-crypto";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import PostCard from "./card";
-
-interface PostInterface {
-    id: string;
-    user_id: string;
-    text: string;
-    parent_id: string | null;
-    created_at?: string;
-}
 
 const Post = () => {
     const { user } = useAuth();
@@ -90,7 +83,6 @@ const Post = () => {
                                 data={posts}
                                 renderItem={({ item }) => (
                                     <PostCard
-                                        user={user}
                                         post={item}
                                         updatePost={updatePost}
                                     />
