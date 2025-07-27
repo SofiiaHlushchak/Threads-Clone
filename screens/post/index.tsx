@@ -1,4 +1,5 @@
 import {
+    FlatList,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
@@ -9,181 +10,129 @@ import {
 
 import {
     Avatar,
-    AvatarBadge,
     AvatarFallbackText,
     AvatarImage,
 } from "@/components/ui/avatar";
 import { Button, ButtonText } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Divider } from "@/components/ui/divider";
-import { Heading } from "@/components/ui/heading";
 import { HStack } from "@/components/ui/hstack";
-import { Input, InputField } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/AuthProvider";
 import * as Crypto from "expo-crypto";
 import { router } from "expo-router";
-import {
-    Camera,
-    Hash,
-    ImagePlay,
-    Images,
-    MapPin,
-    Mic,
-} from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import PostCard from "./card";
+
+interface PostInterface {
+    id: string;
+    user_id: string;
+    text: string;
+    parent_id: string | null;
+    created_at?: string;
+}
 
 const Post = () => {
     const { user } = useAuth();
-    const [text, setText] = useState("");
+    const [posts, setPosts] = useState<PostInterface[]>([]);
+
+    const DefaultPost: PostInterface = {
+        id: Crypto.randomUUID(),
+        user_id: user.id,
+        parent_id: null,
+        text: "",
+    };
+
+    useEffect(() => {
+        setPosts([DefaultPost]);
+    }, []);
 
     const onPress = async () => {
-        const { data, error } = await supabase.from("Post").insert({
-            id: Crypto.randomUUID(),
-            user_id: user.id,
-            text,
-        });
+        const { data, error } = await supabase.from("Post").insert(posts);
 
         if (!error) router.back();
     };
+
+    const updatePost = (id: string, text: string) => {
+        setPosts(
+            posts.map((p: PostInterface) => (p.id === id ? { ...p, text } : p))
+        );
+    };
     return (
-        <SafeAreaView>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                keyboardVerticalOffset={75}
-            >
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                    <VStack space="lg" className="h-full justify-between">
-                        <VStack>
-                            <HStack className="justify-between items-center p-3">
-                                <Button
-                                    onPress={() => {
-                                        router.back();
-                                    }}
-                                    size="lg"
-                                    variant="link"
-                                >
-                                    <ButtonText>Cancel</ButtonText>
-                                </Button>
-                                <Text
-                                    size="lg"
-                                    className="font-bold text-black"
-                                >
-                                    New Thread
-                                </Text>
-                                <View className="w-10" />
-                            </HStack>
-                            <Divider />
-                            <HStack className="items-center px-5">
-                                <VStack className="items-center" space="md">
-                                    <Avatar size="md">
-                                        <AvatarFallbackText>
-                                            {user.username}
-                                        </AvatarFallbackText>
-                                        <AvatarImage
-                                            source={{ uri: user?.avatar }}
-                                        />
-                                        <AvatarBadge />
-                                    </Avatar>
-                                    <Divider
-                                        orientation="vertical"
-                                        className="h-16"
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={75}
+        >
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <SafeAreaView className="h-full">
+                    <HStack className="justify-between items-center p-3">
+                        <Button
+                            onPress={() => {
+                                router.back();
+                            }}
+                            size="lg"
+                            variant="link"
+                        >
+                            <ButtonText style={{ fontFamily: "LeagueSpartan" }}>
+                                Cancel
+                            </ButtonText>
+                        </Button>
+                        <Text size="lg" className="font-bold text-black">
+                            New Thread
+                        </Text>
+                        <View className="w-10" />
+                    </HStack>
+                    <Divider />
+                    <VStack space="lg" className="flex-1 justify-between">
+                        <VStack space="md">
+                            <FlatList
+                                data={posts}
+                                renderItem={({ item }) => (
+                                    <PostCard
+                                        user={user}
+                                        post={item}
+                                        updatePost={updatePost}
                                     />
-                                </VStack>
-                                <VStack space="md">
-                                    <Card
-                                        size="md"
-                                        className="m-3 bg-transparent"
-                                    >
-                                        <VStack className="p-3" space="lg">
-                                            <VStack>
-                                                <Heading
-                                                    size="md"
-                                                    className="mb-1"
-                                                >
-                                                    {user?.username}
-                                                </Heading>
-                                                <Input
-                                                    size="md"
-                                                    className="border-0"
-                                                >
-                                                    <InputField
-                                                        placeholder="What's new?"
-                                                        className="px-0"
-                                                        value={text}
-                                                        onChangeText={setText}
-                                                    ></InputField>
-                                                </Input>
-                                            </VStack>
-                                            <HStack
-                                                className="items-center"
-                                                space="3xl"
-                                            >
-                                                <Images
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                                <Camera
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                                <ImagePlay
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                                <Mic
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                                <Hash
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                                <MapPin
-                                                    size={24}
-                                                    color="gray"
-                                                    strokeWidth={1.5}
-                                                />
-                                            </HStack>
-                                        </VStack>
-                                    </Card>
-                                    <HStack
-                                        className="items-center p-3"
-                                        space="md"
-                                    >
-                                        <Avatar size="sm">
-                                            <AvatarFallbackText>
-                                                {user.username}
-                                            </AvatarFallbackText>
-                                            <AvatarImage
-                                                source={{ uri: user?.avatar }}
-                                            />
-                                            <AvatarBadge />
-                                        </Avatar>
-                                        <Button
-                                            className="rounded-full"
-                                            variant="link"
-                                            onPress={onPress}
-                                        >
-                                            <ButtonText>
-                                                Add to Thread
-                                            </ButtonText>
-                                        </Button>
-                                    </HStack>
-                                </VStack>
+                                )}
+                            />
+
+                            <HStack className="items-center px-6" space="md">
+                                <Avatar size="xs">
+                                    <AvatarFallbackText>
+                                        {user.username}
+                                    </AvatarFallbackText>
+                                    <AvatarImage
+                                        source={{ uri: user?.avatar }}
+                                    />
+                                </Avatar>
+                                <Button
+                                    className="rounded-full"
+                                    variant="link"
+                                    onPress={() =>
+                                        setPosts([
+                                            ...posts,
+                                            {
+                                                ...DefaultPost,
+                                                parent_id: posts[0].id,
+                                            },
+                                        ])
+                                    }
+                                >
+                                    <ButtonText>Add to Thread</ButtonText>
+                                </Button>
                             </HStack>
                         </VStack>
+                        <HStack className="items-center justify-between p-3 mb-18">
+                            <Text size="sm">Anyone can reply & quote</Text>
+                            <Button className="rounded-full" onPress={onPress}>
+                                <ButtonText>Post</ButtonText>
+                            </Button>
+                        </HStack>
                     </VStack>
-                </TouchableWithoutFeedback>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
     );
 };
 
