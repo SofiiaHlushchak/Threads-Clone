@@ -36,7 +36,9 @@ const Home = () => {
     const getThreads = async () => {
         const { data, error } = await supabase
             .from("Post")
-            .select("*, User(*)");
+            .select("*, User(*)")
+            .not("parent_id", "is", null)
+            .order("created_at", { ascending: false });
         if (!error) return setThreads(data);
     };
 
@@ -57,7 +59,7 @@ const Home = () => {
             >
                 <HStack className="items-center px-5">
                     <Avatar size="md">
-                        <AvatarFallbackText>{user.username}</AvatarFallbackText>
+                        <AvatarFallbackText>{user?.username}</AvatarFallbackText>
                         <AvatarImage source={{ uri: user?.avatar }} />
                         <AvatarBadge />
                     </Avatar>
