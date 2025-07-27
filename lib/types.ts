@@ -6,6 +6,7 @@ export interface PostInterface {
     created_at?: string;
     User?: UserInterface;
     Post?: PostInterface[];
+    file?: string;
 }
 
 export interface UserInterface {

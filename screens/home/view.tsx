@@ -11,6 +11,7 @@ import { VStack } from "@/components/ui/vstack";
 import { PostInterface } from "@/lib/types";
 import { formatDistanceToNow } from "date-fns";
 import { Heart, MessageCircle, Repeat, Send } from "lucide-react-native";
+import { Image } from "react-native";
 
 const View = ({ item }: { item: PostInterface }) => {
     return (
@@ -42,6 +43,19 @@ const View = ({ item }: { item: PostInterface }) => {
                     </HStack>
 
                     <Text>{item.text}</Text>
+
+                    {item.file && (
+                        <Image
+                            source={{
+                                uri: `${process.env.EXPO_PUBLIC_BUCKET_URL}/${item.user_id}/${item.file}`,
+                            }}
+                            style={{
+                                height: 100,
+                                width: 100,
+                                borderRadius: 10,
+                            }}
+                        />
+                    )}
 
                     <HStack className="items-center" space="lg">
                         <Heart size={20} color="gray" strokeWidth={1.5} />

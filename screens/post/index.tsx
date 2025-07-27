@@ -47,9 +47,11 @@ const Post = () => {
         if (!error) router.back();
     };
 
-    const updatePost = (id: string, text: string) => {
+    const updatePost = (id: string, key: string, value: string) => {
         setPosts(
-            posts.map((p: PostInterface) => (p.id === id ? { ...p, text } : p))
+            posts.map((p: PostInterface) =>
+                p.id === id ? { ...p, [key]: value } : p
+            )
         );
     };
     return (

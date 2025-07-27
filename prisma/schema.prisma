@@ -23,7 +23,8 @@ model Post {
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   parent_id  String?
   parent     Post?    @relation(name: "Posts", fields: [parent_id], references: [id], onDelete: Cascade)
-  text       String?
+  text       String
+  file       String?
   created_at DateTime @default(now())
   Post       Post[]   @relation("Posts")
 }
