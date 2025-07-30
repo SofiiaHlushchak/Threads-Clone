@@ -28,19 +28,23 @@ const View = ({ item }: { item: PostInterface }) => {
                     />
                 </Avatar>
                 <VStack className="flex-1" space="md">
-                    <HStack className="items-center" space="md">
-                        <Text size="lg" bold>
-                            {item.User?.username}
-                        </Text>
-                        <Text size="md" className="text-gray-500 text-xs">
-                            {item.created_at &&
-                                formatDistanceToNow(
-                                    new Date(item.created_at).getTime() -
-                                        new Date().getTimezoneOffset() * 60000,
-                                    { addSuffix: true }
-                                )}
-                        </Text>
-                    </HStack>
+                    <VStack>
+                        <HStack className="items-center" space="md">
+                            <Text size="lg" bold>
+                                {item.User?.username}
+                            </Text>
+                            <Text size="md" className="text-gray-500 text-xs">
+                                {item.created_at &&
+                                    formatDistanceToNow(
+                                        new Date(item.created_at).getTime() -
+                                            new Date().getTimezoneOffset() *
+                                                60000,
+                                        { addSuffix: true }
+                                    )}
+                            </Text>
+                        </HStack>
+                        {item.Place?.name && <Text size="sm" bold>{item.Place?.name}</Text>}
+                    </VStack>
 
                     <Text>{item.text}</Text>
 
