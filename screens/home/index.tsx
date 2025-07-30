@@ -16,6 +16,7 @@ import { Text } from "@/components/ui/text";
 import { VStack } from "@/components/ui/vstack";
 import { usePosts } from "@/hooks/use-posts";
 import { useAuth } from "@/providers/AuthProvider";
+import { usePost } from "@/providers/PostProvider";
 import { router } from "expo-router";
 import {
     Camera,
@@ -31,6 +32,7 @@ const Home = () => {
     const { user } = useAuth();
 
     const { data, refetch, isLoading } = usePosts();
+    const { setPhoto } = usePost();
 
     return (
         <SafeAreaView>
@@ -39,6 +41,7 @@ const Home = () => {
             </HStack>
             <Pressable
                 onPress={() => {
+                    setPhoto("");
                     router.push("/post");
                 }}
             >

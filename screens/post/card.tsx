@@ -86,7 +86,12 @@ const PostCard = ({ post }: PostCardProps) => {
                         )}
                     </VStack>
                     <HStack className="items-center" space="3xl">
-                        <Pressable onPress={addPhoto}>
+                        <Pressable
+                            onPress={() => {
+                                setPhoto("");
+                                addPhoto();
+                            }}
+                        >
                             <Images size={24} color="gray" strokeWidth={1.5} />
                         </Pressable>
 
@@ -101,8 +106,21 @@ const PostCard = ({ post }: PostCardProps) => {
                         >
                             <Camera size={24} color="gray" strokeWidth={1.5} />
                         </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                router.push({
+                                    pathname: "/gif",
+                                    params: { threadId: post.id },
+                                });
+                            }}
+                        >
+                            <ImagePlay
+                                size={24}
+                                color="gray"
+                                strokeWidth={1.5}
+                            />
+                        </Pressable>
 
-                        <ImagePlay size={24} color="gray" strokeWidth={1.5} />
                         <Mic size={24} color="gray" strokeWidth={1.5} />
                         <Hash size={24} color="gray" strokeWidth={1.5} />
                         <MapPin size={24} color="gray" strokeWidth={1.5} />
