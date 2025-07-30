@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 export const getPosts = async () => {
     const { data, error } = await supabase
         .from("Post")
-        .select("*, User(*)")
+        .select("*, User(*), Place(*)")
         .is("parent_id", null)
         .order("created_at", { ascending: false });
 

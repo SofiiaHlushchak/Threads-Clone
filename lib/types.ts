@@ -6,11 +6,20 @@ export interface PostInterface {
     created_at?: string;
     User?: UserInterface;
     Post?: PostInterface[];
-    file?: string;
+    file?: string | null;
+    place_id?: string | null;
 }
 
 export interface UserInterface {
     id: string;
     username: string;
     avatar?: string;
+}
+
+export interface PlaceInterface {
+    id: string;
+    name: string;
+    latitude: number;
+    longitude: number;
+    address: string;
 }

@@ -54,6 +54,13 @@ export default function RootLayout() {
                                     presentation: "modal",
                                 }}
                             />
+                            <Stack.Screen
+                                name="places"
+                                options={{
+                                    headerShown: false,
+                                    presentation: "modal",
+                                }}
+                            />
                             <Stack.Screen name="+not-found" />
                         </Stack>
                     </PostProvider>
