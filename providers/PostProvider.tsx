@@ -56,7 +56,7 @@ export const PostProvider = ({ children }: { children: React.ReactNode }) => {
 
         if (!error) {
             clearPosts();
-
+            setPhoto("");
             router.back();
         }
     };
